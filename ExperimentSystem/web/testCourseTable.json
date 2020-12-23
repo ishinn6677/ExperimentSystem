@@ -1,0 +1,47 @@
+{"code": 0
+,"msg": ""
+,"count": 1000
+,"data": [
+  {
+    "id": 100,
+    "courseName": "j2ee课程设计",
+    "teacher": "刘毅",
+    "classroom": "1001",
+    "year": 2020,
+    "term": 1,
+    "beginWeek": 15,
+    "endWeek": 20,
+    "weekDay": 3,
+    "dayOrder": 1
+  },
+
+  {
+    "id": 101,
+    "courseName": "C++课程设计",
+    "teacher": "蔡云飞",
+    "classroom": "1012",
+    "year": 2020,
+    "term": 2,
+    "beginWeek": 1,
+    "endWeek": 5,
+    "weekDay": 5,
+    "dayOrder": 3
+  },
+
+  {
+    "id": 102,
+    "courseName": "C++课程设计",
+    "teacher": "蔡云飞",
+    "classroom": "1012",
+    "year": 2019,
+    "term": 2,
+    "beginWeek": 1,
+    "endWeek": 5,
+    "weekDay": 5,
+    "dayOrder": 3
+  }
+
+
+
+]
+}

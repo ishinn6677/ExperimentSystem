@@ -1,0 +1,36 @@
+*{
+    margin: 0;
+    padding:0;
+}
+
+.addcourse-form{
+    width: 550px;
+    height: 400px;
+    margin-top: 45px;
+    margin-left: 90px;
+}
+
+.addcourse-form .long-inpupt .layui-input-inline{
+     width: 413px;
+ }
+
+.addcourse-form .mid-inpupt .layui-input-inline{
+    width: 140px;
+}
+.addcourse-form  .resetbtn{
+    margin-left: 68px;
+}
+
+
+.addcourse-form input:disabled{
+    color: black;
+}
+
+.addcourse-form .layui-disabled, .layui-disabled:hover {
+    color: black!important;
+    cursor: default!important;
+}
+
+.addcourse-form .layui-select-disabled i{
+    display: none;
+}
