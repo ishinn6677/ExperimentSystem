@@ -69,11 +69,11 @@ public class LoginService {
         System.out.println("根据学号返回用户:");
         System.out.println(loginService.getUsrById("456").toString());//根据学号返回用户
 
-        boolean i = loginService.updatePwdById("123","1111111");
-        if(i)
-            System.out.println("update success");
-        else
-            System.out.println("update fail");
+//        boolean i = loginService.updatePwdById("123","1111111");
+//        if(i)
+//            System.out.println("update success");
+//        else
+//            System.out.println("update fail");
 //        //新增
 //        Login login = new Login("马朴涵","789","老师","789");
 //        boolean add = loginService.addUsr(login);

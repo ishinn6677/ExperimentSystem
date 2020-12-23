@@ -86,12 +86,12 @@
 				})
 
 				//登录按钮监听
-				form.on('submit(submit)', function(data) {
+				form.on('submit(submit)',function(data) {
 					var username = $("#username_login").val();
 					var password = $("#password_login").val();
 					// var userType = $('#userType').val();
 					$.ajax({
-						url: "",	//TODO:处理登陆请求servlet
+						url: "http:localhost:8080/LoginServlet",	//TODO:处理登陆请求servlet
 						type: "post",
 						data: "userName=" + username + "&password=" + password /*+ "&userType=" + userType */ ,
 						dataType: 'text',

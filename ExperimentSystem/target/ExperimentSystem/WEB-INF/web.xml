@@ -14,14 +14,13 @@
         <servlet-class>controller.UploadExReportServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>LoginServlet</servlet-name>
-        <servlet-class>controller.LoginServlet</servlet-class>
+        <servlet-name>ModifyCourseServlet</servlet-name>
+        <servlet-class>controller.ModifyCourseServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>LoginServlet</servlet-name>
-        <url-pattern>/LoginServlet</url-pattern>
+        <servlet-name>ModifyCourseServlet</servlet-name>
+        <url-pattern>/ModifyCourseServlet</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>UploadExReportServlet</servlet-name>
         <url-pattern>/UploadExReportServlet</url-pattern>

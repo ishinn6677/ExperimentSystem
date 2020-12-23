@@ -51,9 +51,9 @@ public class UploadExperimentServlet extends HttpServlet {
         Experiment experiment=new Experiment(id,Ex_name,Ex_teacher_id,Ex_teacher_name,Ex_content,deadline,Room);
         boolean ifSuccess= es.addExperiment(experiment);
         if(ifSuccess==true){
-            request.getRequestDispatcher("").forward(request,response);
+            response.getWriter().write("success");
         }else{
-            request.getRequestDispatcher("").forward(request,response);
+            response.getWriter().write("fail");
         }
     }
 }
