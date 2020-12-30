@@ -1,0 +1,49 @@
+.personalInfo-form .layui-input-inline{
+    width: 300px;
+}
+
+.personalInfo-form .resetbtn{
+    margin-left: 40px;
+}
+
+.icon_right{
+    color: green;
+    font-weight: bolder;
+    position: relative;
+    top: 11px;
+}
+
+.icon_wrong{
+    color: red;
+    font-weight: bolder;
+    position: relative;
+    top: 10px;
+}
+
+.myBody{
+    border: 0px solid black;
+    width: 600px;
+    height: 400px;
+    margin:auto;
+    margin-top: 60px;
+    padding-top: 10px;
+    padding-left: 30px;
+    border-radius: 21px;
+    background: #f7f7f8;
+    box-shadow:  11px 11px 21px #a3a3a4,
+    -11px -11px 21px #ffffff;
+}
+
+.myBody .layui-tab-content{
+    margin-left: 40px;
+    margin-top: 25px;
+
+}
+
+.myBody .edit-password-form .layui-input-inline{
+    width: 300px;
+}
+
+body{
+    background: rgb(240,240,240);
+}

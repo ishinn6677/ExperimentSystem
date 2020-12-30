@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>开放式实验管理系统</title>
+		<link rel="stylesheet" href="../layui/css/layui.css" media="all">
+		<link rel="stylesheet" href="../css/login.css" />
+		<link rel="stylesheet" href="../css/base.css" />
+	</head>
+	<body>
+		<div class="login_bg">
+			<img src="../img/night_adit.png" />
+		</div>
+		<div class="container">
+			<div class="content">
+				<!-- 标题 -->
+				<div class="title">
+					<p>南京理工大学</p>
+					<p>开放式实验管理系统</p>
+				</div>
+				<form class="layui-form">
+					<!-- 用户名 -->
+					<div class="layui-col-sm7 layui-col-md7 layui-col-sm-offset2 layui-col-md-offset2">
+						<div class="layui-form-item">
+							<label class="layui-form-label"><i class="layui-icon layui-icon-username"></i></label>
+							<div class="layui-input-block">
+								<input type="text" id="username_login" name="username" lay-verify="required" autocomplete="off" placeholder="用户名"
+								 class="layui-input">
+							</div>
+						</div>
+					</div>
+					<!-- 密码 -->
+					<div class="layui-col-sm7 layui-col-md7 layui-col-sm-offset2 layui-col-md-offset2">
+						<div class="layui-form-item">
+							<label class="layui-form-label"><i class="layui-icon layui-icon-password"></i></label>
+							<div class="layui-input-block">
+								<input type="password" id="password_login" name="password" lay-verify="required" autocomplete="off" placeholder="密码"
+								 class="layui-input">
+							</div>
+						</div>
+					</div>
+					<!-- 文字行 -->
+					<div class="layui-col-sm5 layui-col-md5 layui-col-sm-offset4 layui-col-md-offset4">
+						<div class="layui-form-item words">
+							<!-- 帮助 -->
+							<p class="help">
+								<a href="javascript:;" id="help"><i class="layui-icon layui-icon-tips"></i> 帮助</a>
+							</p>
+							<!-- 忘记密码 -->
+							<p class="forget">
+								<a href="javascript:;">忘记密码？</a>
+							</p>
+						</div>
+					</div>
+					<!-- 登录按钮 -->
+					<div class="login_btn layui-col-sm5 layui-col-md5 ">
+						<button class="layui-btn layui-btn-fluid" lay-submit="" lay-filter="submit">立即登录</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<script src="../js/jquery.min.js"></script>
+		<script src="../layui/layui.js" charset="utf-8"></script>
+		<script>
+			layui.use(['form', 'layer'], function() {
+				var $ = layui.jquery,
+					form = layui.form,
+					layer = layui.layer;
+
+				$("#help").click(function() {
+					//自定页
+					layer.open({
+						type: 1,
+						title: '登录提示',
+						skin: 'myskin', //样式类名
+						closeBtn: 0, //不显示关闭按钮
+						anim: 2,
+						shadeClose: true, //开启遮罩关闭
+						area: '400px',
+						content: '<div class="layer_content">' +
+							'<p>账号规则：学生登录账号为学号，教工登录账号为工号。</p>' +
+							'<p>密码规则：学生教工登录初始密码为666666。</p>' +
+							'</div>'
+					});
+				})
+
+				//登录按钮监听
+				form.on('submit(submit)', function(data) {
+					var username = $("#username_login").val();
+					var password = $("#password_login").val();
+					// var userType = $('#userType').val();
+					$.ajax({
+						url: "../LoginServlet",	//TODO:处理登陆请求servlet
+						type: "post",
+						data: "userName=" + username + "&password=" + password /*+ "&userType=" + userType */ ,
+						dataType: 'text',
+						success: function(data) {
+							if (data == "student") { //学生
+								//TODO:学生页面
+								location.href = "stduent.html";
+							} else if (data == "false") { //登陆失败
+								layer.msg("用户名或密码错误", {icon: 5,anim: 6});
+							} else if (data == "lab_teacher") { //机房老师
+								//TODO:机房老师页面
+								location.href = "#";
+							} else if (data == "experiment_teacher") { //实验老师
+								//TODO:实验老师页面
+								location.href = "#";
+							} else if (data == "academic_admin") { //教务处
+								//TODO:教务处页面
+								location.href = "#";
+							}
+						},
+						error: function() {
+							layer.msg("请求失败", {icon: 5,anim: 6});
+						},
+					});
+					return false;
+				});
+			});
+		</script>
+	</body>
+</html>

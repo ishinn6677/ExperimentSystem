@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>机房老师页面</title>
+    <link rel="stylesheet" href="layui/css/layui.css"  >
+    <link rel="stylesheet" href="css/management_teacher_page.css"  >
+</head>
+<body>
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">机房老师管理界面</div>
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item layui-this"><a href="">课程管理</a></li>
+            <li class="layui-nav-item"><a href="management_teacher_personcenter.html">个人中心</a></li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+            <a href="management_teacher_personcenter.html">
+                <span class="layui-icon admin_head">&#xe66f;</span>
+                <span class="teacherName">机房老师</span>
+            </a>
+        </li>
+<!--            todo:退出登录的a标签里面是退出登录的servlet url，-->
+<!--                方法为get方法，后端注销会话后跳转到登录页面-->
+            <li class="layui-nav-item logout"><a href="LogoutServlet">退出</a></li>
+        </ul>
+    </div>
+    <div class="myBody">
+        <div class="myTitle"><h2>固定上机课程表</h2></div>
+        <table class="layui-hide" id="courseTable" lay-filter="courseTable"></table>
+    </div>
+    <div class="addcourse-form"  style="display: none" >
+        <form class="layui-form layui-form-pane" lay-filter="addcourse-form" action="">
+        <div class="idItem layui-form-item long-inpupt" style="display: none;">
+            <label class="layui-form-label">课程ID:</label>
+            <div class="layui-input-inline">
+                <input class="layui-input" style="color: red;" type="text">
+            </div>
+        </div>
+
+        <div class="layui-form-item long-inpupt">
+            <label class="layui-form-label">课程名称:</label>
+            <div class="layui-input-inline">
+                <input class="layui-input" type="text" name="courseName" placeholder="请输入课程名称" required
+                       lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item long-inpupt">
+            <label class="layui-form-label">教师姓名:</label>
+            <div class="layui-input-inline">
+                <input class="layui-input" type="text" name="teacher" placeholder="请输入教师姓名" required
+                       lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item long-inpupt">
+            <label class="layui-form-label">机房:</label>
+            <div class="layui-input-inline">
+                <select name="classroom" lay-verify="required" lay-search>
+                    <option value="">请选择机房</option>
+                    <option value="1001">计算机院办1001</option>
+                    <option value="1002">计算机院办1002</option>
+                    <option value="1003">计算机院办1003</option>
+                    <option value="1004">计算机院办1004</option>
+                    <option value="1005">计算机院办1005</option>
+                    <option value="1006">计算机院办1006</option>
+                    <option value="1007">计算机院办1007</option>
+                    <option value="1008">计算机院办1008</option>
+                    <option value="1009">计算机院办1009</option>
+                    <option value="1010">计算机院办1010</option>
+                    <option value="1011">计算机院办1011</option>
+                    <option value="1012">计算机院办1012</option>
+                    <option value="1013">计算机院办1013</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item mid-inpupt">
+            <div class="layui-inline">
+                <label class="layui-form-label">年份:</label>
+                <div class="layui-input-inline">
+                    <input name="year" type="text" class="layui-input" id="year" placeholder="请选择年份" required
+                           lay-verify="required"
+                    >
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <label class="layui-form-label">学期:</label>
+                <div class="layui-input-inline">
+                    <select name="term" lay-verify="required" lay-search>
+                        <option value="">请选择学期</option>
+                        <option value="1">第一学期</option>
+                        <option value="2">第二学期</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item mid-inpupt">
+            <label class="layui-form-label">起止周:</label>
+            <div class="layui-input-inline">
+                <input class="layui-input" type="text" name="beginWeek" id="beginWeek" placeholder="开始周(1-25)" required
+                       lay-verify="required|addcourseBeginWeek">
+            </div>
+            <div class="layui-form-mid">-</div>
+            <div class="layui-input-inline">
+                <input class="layui-input" type="text" name="endWeek" placeholder="结束周(1-25)" required
+                       lay-verify="required|addcourseEndWeek">
+            </div>
+        </div>
+
+        <div class="layui-form-item mid-inpupt">
+            <div class="layui-inline">
+                <label class="layui-form-label">周几:</label>
+                <div class="layui-input-inline">
+                    <select name="weekDay" lay-verify="required" lay-search>
+                        <option value="">请选择周几</option>
+                        <option value="1">周一</option>
+                        <option value="2">周二</option>
+                        <option value="3">周三</option>
+                        <option value="4">周四</option>
+                        <option value="5">周五</option>
+                        <option value="6">周六</option>
+                        <option value="7">周日</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <label class="layui-form-label">第几大节:</label>
+                <div class="layui-input-inline">
+                    <select name="dayOrder" lay-verify="required" lay-search>
+                        <option value="">请选择第几大节</option>
+                        <option value="1">第一大节</option>
+                        <option value="2">第二大节</option>
+                        <option value="3">第三大节</option>
+                        <option value="4">第四大节</option>
+                        <option value="5">第五大节</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item btns">
+            <div class="layui-input-block">
+                <input name="flag" value="addCourse" style="display: none">
+                <button class="layui-btn submitbtn" lay-submit lay-filter="formDemo">添加课程</button>
+                <button type="reset" class="layui-btn layui-btn-primary resetbtn">重置表单</button>
+            </div>
+        </div>
+
+    </form>
+    </div>
+</div>
+
+<script type="text/html" id="leftToolBar">
+    <button class="layui-btn layui-icon layui-icon-add-1" lay-event="add">添加新课程</button>
+</script>
+
+<script type="text/html" id="rowOperation">
+    <div class="layui-btn-container" >
+        <a class="layui-btn layui-icon  layui-btn-normal  layui-btn-xs" lay-event="info">&#xe615;详情</a>
+        <a class="layui-btn layui-icon   layui-btn-xs" lay-event="edit">&#xe642;修改</a>
+        <a class="layui-btn layui-icon  layui-btn-danger   layui-btn-xs" lay-event="del">&#xe640;删除</a>
+    </div>
+</script>
+
+<script src="layui/layui.js" charset="utf-8"></script>
+<script src="js/jquery.min.js" charset="utf-8"></script>
+
+<!--为了后台管理那一点特效。。。-->
+<script>
+    layui.use('element', function(){
+        var element = layui.element;
+
+    });
+</script>
+
+<!--部署添加课程表格-->
+<script>
+    layui.use(['form', 'laydate','jquery'], function () {
+        var form = layui.form;
+        var laydate = layui.laydate;
+        var $ = layui.jquery;
+        //年选择
+        laydate.render({
+            elem: '.addcourse-form #year', //指定元素
+            type: 'year',
+            trigger:'click'
+        });
+
+        form.verify({
+            addcourseBeginWeek:function (value) {
+                var intv = 0;
+                intv = parseInt(value);
+                if(!(intv>=1&&intv<=25)){
+                    return '开始周格式不正确，请输入1-25的纯数字。';
+                }
+            },
+            addcourseEndWeek:function (value) {
+                var intv = 0;
+                intv = parseInt(value);
+                if(!(intv>=1&&intv<=25)){
+                    return '结束周格式不正确，请输入1-25的纯数字。';
+                }
+                var intbeginWeek = 0;
+                intbeginWeek = parseInt($('#beginWeek').val());
+                if(intbeginWeek>intv){
+                    return '开始周大于结束周？请修改信息后再次提交！'
+                }
+            }
+        })
+
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            alert(JSON.stringify(data.field));
+            $.ajax({
+                //todo：修改和编辑的提交接口.
+                url: "UploadCourseServlet",
+                type: "post",
+                data: data.field,
+                dataType: 'text',
+                success: function (returnData) {
+                    if(returnData=="success"){
+                        if(data.flag==="addCourse"){
+                            layer.msg("添加课程成功", {icon: 6, anim: 6});
+                        }else if(data.flag==="editCourse") {
+                            layer.msg("修改课程成功", {icon: 6, anim: 6});
+                        }
+                        table.reload('addcourse-form');//todo:我不会弄,刷新页面,先试试.
+                        layer.closeAll();
+                    }else if(returnData=="false"){
+                        layer.msg("添加课程失败", {icon: 5, anim: 6})
+                    }
+                },
+                error: function () {
+                    layer.msg("请求失败", {icon: 5, anim: 6})
+                }
+            });
+
+            return false;
+        });
+
+
+
+    });
+</script>
+
+<!--一些函数，可以修改表格的显示形式。-->
+<script>
+    function formForinfo(data) {
+        layui.use(['form','jquery'], function () {
+            var form = layui.form;
+            var $ = layui.jquery;
+            $('.addcourse-form form .idItem').css('display','block');
+            $('.addcourse-form form .idItem input').attr('name','id');
+            $('.addcourse-form').find("button").css('display','none');
+            $('.addcourse-form').find("input").attr('disabled', "disabled");
+            $('.addcourse-form').find("select").attr('disabled', 'disabled');
+            $('.addcourse-form form').removeClass('layui-form-pane');
+            form.render();
+            form.val('addcourse-form',data);
+        })
+    }
+
+    function formForinfoReverse() {
+        layui.use(['form'], function () {
+            var form = layui.form;
+            $('.addcourse-form form .idItem').css('display','none');
+            $('.addcourse-form form .idItem input').removeAttr('name');
+            $('.addcourse-form').find("button").css('display','inline-block');
+            $('.addcourse-form').find("input").removeAttr('disabled');
+            $('.addcourse-form').find("select").removeAttr('disabled');
+            $('.addcourse-form form').addClass('layui-form-pane');
+            form.render();
+            $('.addcourse-form form')[0].reset();
+        })
+    }
+
+    function formForEdit(data) {
+        layui.use(['form'], function () {
+            var form = layui.form;
+            $('.addcourse-form form .idItem').css('display','block');
+            $('.addcourse-form form .idItem input').attr('name','id');
+            $('.addcourse-form form .idItem input').attr('readonly',true);
+            $('.addcourse-form form .idItem input').attr('value',data.id);
+            $('.addcourse-form form .btns input').attr('value','editCourse');
+            $('.addcourse-form form .btns .submitbtn')[0].innerHTML = "修改课程";
+            form.render();
+            form.val('addcourse-form',data);
+        })
+    }
+
+    function formForEditReverse() {
+        layui.use(['form'], function () {
+            var form = layui.form;
+            $('.addcourse-form form .idItem').css('display','none');
+            $('.addcourse-form form .idItem input').removeAttr('name');
+            $('.addcourse-form form .idItem input').attr('readonly',false);
+            $('.addcourse-form form .idItem input').removeAttr('value');
+            $('.addcourse-form form .btns input').attr('value','addCourse');
+            $('.addcourse-form form .btns .submitbtn')[0].innerHTML = "添加课程";
+            form.render();
+            $('.addcourse-form form')[0].reset();
+        })
+    }
+
+</script>
+
+<!--创建表格，部署上面的事件-->
+<script>
+    layui.use(['table','layer','jquery','form'], function(){
+        var table = layui.table;
+        var layer = layui.layer;
+        var $ = layui.jquery;
+        var form = layui.form;
+        //创建表格js
+        table.render({
+            elem: '#courseTable'
+            ,url:'QueryCourseServlet'
+            ,toolbar: '#leftToolBar'
+            ,defaultToolbar: ['filter', 'exports', 'print']
+            ,initSort: {field:'id', type:'desc'}
+            ,loading:true
+            ,title:"固定上机课程表"
+            ,limits:[5,10,15,20,35,50,100,9999]
+            ,cols: [
+                [{field:'id', title:'课ID', rowspan:2,minWidth:80,fixed:'left',unresize:true,sort:true,style:"color:red"}
+                ,{field:'courseName', title:'课程名',rowspan:2, minWidth:160,sort:true}
+                ,{field:'teacher', title:'开课教师',rowspan:2, minWidth:120,sort:true}
+                ,{field:'classroom', title:'上机教室',rowspan:2, minWidth:160,sort:true,templet: function(d){return '计算机院办'+"<b>"+d.classroom+"</b>";}}
+                ,{align: 'center',title:'课程时间',colspan:6}
+                ,{field:'operation',fixed: 'right', title:'操作',rowspan:2,toolbar: '#rowOperation', minWidth:190}
+                ]
+                ,
+                [{field:'year', title:'年份', minWidth:80,sort:true,templet: function(d){return "<b>"+d.year+"</b>" +'年';}}
+                ,{field:'term', title:'学期',minWidth:80,sort:true,templet: function(d){return  '第'+"<b>"+d.term+"</b>"+'学期';}}
+                ,{field:'beginWeek', title:'起始周', minWidth:100,sort:true,templet: function(d){return  '第'+"<b>"+d.beginWeek+"</b>" +'周';}}
+                ,{field:'endWeek', title:'结束周', minWidth:100,sort:true,templet: function(d){return  '第'+"<b>"+d.endWeek+"</b>" +'周';}}
+                ,{field:'weekDay', title:'周几', minWidth:80,sort:true,templet: function(d){return  '周'+"<b>"+d.weekDay+"</b>";}}
+                ,{field:'dayOrder', title:'第几大节', minWidth:110,sort:true,templet: function(d){return  '第'+"<b>"+d.dayOrder+"</b>"+'大节';}}
+                ]
+            ]
+            ,page: true
+        });
+
+        //头工具栏事件
+        table.on('toolbar(courseTable)', function(obj){
+            if(obj.event==="add"){
+                var layerIndex = layer.open({
+                    type: 1,
+                    title: "添加课程",
+                    content: $(".addcourse-form"),
+                    skin: "layui-layer-molv",
+                    area: ['700px', '510px'],
+                    shadeClose: true,
+                    end:function () {
+                        $('.addcourse-form form')[0].reset();
+                    }
+                })
+            }
+        });
+
+        //行工具栏事件
+        table.on('tool(courseTable)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'del'){
+                layer.confirm('确定要删除课程？', function(index){
+                    $.ajax({
+                        //todo:删除课程的接口,给后端删除课程的id.
+                        url: "DelCourseServlet",
+                        type: "post",
+                        data: data.id,
+                        dataType: 'text',
+                        success: function (data) {
+                            if(data=="success"){
+                                layer.msg("删除课程成功！", {icon: 6, anim: 6})
+                                obj.del();
+                            }else if(data=="false"){
+                                layer.msg("删除课程失败！", {icon: 5, anim: 6})
+                            }
+                        },
+                        error: function () {
+                            layer.msg("请求失败", {icon: 5, anim: 6})
+                        }
+                    });
+                    layer.close(index);
+                });
+            } else if(obj.event === 'edit'){
+                var layerIndex = layer.open({
+                    type: 1,
+                    title: "编辑课程",
+                    content: $(".addcourse-form"),
+                    skin: "layui-layer-molv",
+                    area: ['700px', '550px'],
+                    shadeClose: true,
+                    end:function () {
+                        formForEditReverse();
+                    }
+                })
+                formForEdit(data);
+            }else if(obj.event==='info'){
+                var layerIndex = layer.open({
+                    type: 1,
+                    title: "查看详情",
+                    content: $(".addcourse-form"),
+                    skin: "layui-layer-molv",
+                    area: ['700px', '510px'],
+                    shadeClose: true,
+                    end:function () {
+                        formForinfoReverse();
+                    }
+                })
+                formForinfo(data);
+            }
+        });
+
+        //双击行事件
+        table.on('rowDouble(courseTable)',function (obj) {
+            var data = obj.data;
+            var layerIndex = layer.open({
+                type: 1,
+                title: "查看详情",
+                content: $(".addcourse-form"),
+                skin: "layui-layer-molv",
+                area: ['700px', '510px'],
+                shadeClose: true,
+                end:function () {
+                    formForinfoReverse();
+                }
+            })
+            formForinfo(data);
+        })
+    });
+</script>
+
+<!--头部工具栏的js-->
+<script>
+    layui.use(['jquery','layer'],function () {
+        var layer = layui.layer;
+        var $ = layui.jquery;
+        $.ajax({
+            //todo：获取机房老师姓名.
+            url: "ExperimentNameServlet",
+            type: "post",
+            data: "method="+"getName",
+            dataType: 'text',
+            success: function (returnData) {
+                $(".teacherName").html(returnData);
+            },
+            error: function () {
+                layer.msg("获取姓名失败", {icon: 5, anim: 6});
+            }
+        });
+    })
+
+</script>
+</body>
+</html>

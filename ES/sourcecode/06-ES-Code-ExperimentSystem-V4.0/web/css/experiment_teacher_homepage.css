@@ -1,0 +1,48 @@
+.header .admin_head{
+	font-size: 16px;
+}
+/* 主体内容 */
+.main_content{
+	background-color: rgb(242,242,242);
+	left: 0 !important;
+	bottom: 0 !important;
+}
+
+/*使控制iframe样式*/
+
+html{
+	height: 100%;
+}
+
+body{
+	width: 100%;
+	height: 100%;
+	background: rgb(240,240,240);
+}
+
+.layui-layout-admin{
+	width: 100%;
+	height: 100%;
+}
+
+.main_content{
+	width: 100%;
+	height: calc(100% - 60px);
+	position: relative;
+}
+
+#experimentListFrame{
+	width: 100%;
+	height: 100%;
+	margin: auto;
+	position: absolute;
+	z-index: 100;
+}
+
+#experimentPageFrame{
+	width: 100%;
+	height: 100%;
+	margin: auto;
+	position: absolute;
+	z-index: 0;
+}

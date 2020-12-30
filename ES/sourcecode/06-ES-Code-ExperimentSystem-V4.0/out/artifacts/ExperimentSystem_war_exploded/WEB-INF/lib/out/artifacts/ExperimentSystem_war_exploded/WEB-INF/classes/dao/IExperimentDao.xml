@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="main.Java.daoImpl.IExperimentDao">
+    <!-- 配置查询所有 -->
+    <select id="findAll" resultType="main.Java.entity.Experiment">
+        select * from experiment
+    </select>
+    <select id="getExperimentById" resultType="main.Java.entity.Experiment">
+        select * from experiment where id = #{id}
+    </select>
+    <select id="getMaxId" resultType="int">
+        select max(id) from experiment;
+    </select>
+    <insert id="addExperiment" parameterType="main.Java.entity.Experiment">
+        insert into experiment
+        values(#{id},#{ex_name},#{ex_teacher_id},#{ex_teacher_name},#{ex_content}
+        ,#{deadline},#{room},#{term},#{year})
+    </insert>
+    <delete id="delExperimentById" parameterType="int">
+        delete from experiment where id = #{id}
+    </delete>
+</mapper>

@@ -1,0 +1,58 @@
+*{
+    margin: 0;
+    padding:0;
+}
+
+.addcourse-form{
+    width: 550px;
+    height: 400px;
+    margin-top: 45px;
+    margin-left: 90px;
+}
+
+.addcourse-form .long-inpupt .layui-input-inline{
+     width: 413px;
+ }
+
+.addcourse-form .mid-inpupt .layui-input-inline{
+    width: 140px;
+}
+.addcourse-form  .resetbtn{
+    margin-left: 68px;
+}
+
+
+.addcourse-form input:disabled{
+    color: black;
+}
+
+.addcourse-form .layui-disabled, .layui-disabled:hover {
+    color: black!important;
+    cursor: default!important;
+}
+
+.addcourse-form .layui-select-disabled i{
+    display: none;
+}
+
+.myBody{
+    position: relative;
+    margin-top: -10px;
+}
+
+.myBody .myTitle{
+     position: absolute;
+     left: 50%;
+     top: 30px;
+     transform: translate(-50%,-50%);
+     z-index: 1000!important;
+}
+
+.myBody  .layui-table-body .layui-table-cell{
+    height: 45px!important;
+    line-height: 50px!important;
+}
+
+.myBody  .layui-table-body .layui-btn-container{
+    margin-top: 3px;
+}

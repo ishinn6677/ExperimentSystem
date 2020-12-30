@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="main.Java.daoImpl.ISelectExDao">
+    <!-- 配置查询所有 -->
+    <select id="findAll" resultType="main.Java.entity.SelectEx">-- 返回所有的记录
+        select * from select_ex
+    </select>
+    <select id="getSelectExById" resultType="main.Java.entity.SelectEx">-- 根据id返回选实验记录
+        select * from select_ex where ex_id = #{id}
+    </select>
+    <select id="getStusByExId" resultType="String">-- 根据实验编号返回选择该实验的学生学号
+        select stu_id from select_ex where ex_id = #{ex_id}
+    </select>
+    <select id="getMaxId" resultType="int">-- 返回最大值
+        select max(id) from select_ex
+    </select>
+    <select id="getGrade" resultType="int">-- 获取分分数
+        select grade from select_ex where ex_id=#{ex_id} and stu_id=#{stu_id}
+    </select>
+    <select id="getSeExsByExId" resultType="main.Java.entity.SelectEx">-- 通过实验id返回选择该实验的记录
+        select * from select_ex where ex_id = #{ex_id}
+    </select>
+    <insert id="addSelectEx" parameterType="main.Java.entity.SelectEx">-- 新增选择实验记录
+        insert into select_ex values(#{id},#{ex_id},#{ex_name},#{stu_id},#{stu_name},#{report},#{grade})
+    </insert>
+    <delete id="delSelectExById" parameterType="int">-- 删除实验记录
+        delete from select_ex where id = #{id}
+    </delete>
+    <update id="updateInfo" parameterType="main.Java.entity.SelectEx">-- 修改选择实验记录
+        update select_ex set ex_id = #{ex_id},ex_name=#{ex_name},stu_id=#{stu_id},stu_name=#{stu_name},
+        report=#{report},grade=#{grade} where id = #{id}
+    </update>
+    <update id="setGrade">-- 打分
+        update select_ex set grade=#{grade} where stu_id=#{stu_id} and ex_id=#{ex_id}
+    </update>
+</mapper>
