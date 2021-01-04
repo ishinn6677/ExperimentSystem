@@ -1,0 +1,38 @@
+/*使控制iframe样式*/
+
+html{
+	height: 100%;
+}
+
+body{
+	width: 100%;
+	height: 100%;
+	background: rgb(240,240,240);
+}
+
+.layui-layout-admin{
+	width: 100%;
+	height: 100%;
+}
+
+.main_content{
+	width: 100%;
+	height: calc(100% - 60px);
+	position: relative;
+}
+
+#myExperienceDetailsFrame{
+	width: 100%;
+	height: 100%;
+	margin: auto;
+	position: absolute;
+	z-index: 100;
+}
+
+#appointmentPageFrame{
+	width: 100%;
+	height: 100%;
+	margin: auto;
+	position: absolute;
+	z-index: 0;
+}

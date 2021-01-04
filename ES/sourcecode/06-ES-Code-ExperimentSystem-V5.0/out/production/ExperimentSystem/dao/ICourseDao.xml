@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="main.Java.daoImpl.ICourseDao">
+    <!-- 配置查询所有 -->
+    <select id="findAll" resultType="main.Java.entity.Course">
+        select * from course
+    </select>
+
+    <select id="getCourseById" resultType="main.Java.entity.Course">
+        select * from course where id = #{id}
+    </select>
+
+    <select id="haveCourseOnTime" resultType="integer">
+        select id from course where course_week_st &lt;= #{weekth} and course_week_ed >= #{weekth}
+        and course_weekday = #{dayth} and room = #{room} and course_th = #{courseth}
+    </select>
+
+    <select id="haveCourseOnDay" resultType="integer">
+        select course_th from course where course_week_st &lt; #{weekth} and course_week_ed > #{weekth}
+        and course_weekday = #{dayth} and room = #{room}
+    </select>
+
+    <select id="getMaxId" resultType="int">
+        select IFNULL(max(id),0) from course;
+    </select>
+
+    <insert id="addCourse" parameterType="main.Java.entity.Course">
+        insert into course
+        values(#{id},#{course_year},#{course_term},#{course_week_st},#{course_week_ed},
+        #{course_weekday},#{course_th},#{course_name},#{teacher_name},#{room})
+    </insert>
+
+    <delete id="delCourseById" parameterType="int">
+        delete from course where id = #{id}
+    </delete>
+</mapper>

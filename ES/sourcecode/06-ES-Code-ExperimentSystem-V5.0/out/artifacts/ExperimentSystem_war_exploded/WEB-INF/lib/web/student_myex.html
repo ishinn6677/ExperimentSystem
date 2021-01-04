@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>我的实验</title>
+	</head>
+	<link rel="stylesheet" href="layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="css/student_myex.css" />
+	<body>
+		<div class="layui-layout layui-layout-admin">
+			<!-- 头部 -->
+			<div class="layui-header header">
+				<div class="layui-logo">开放式实验 学生端</div>
+				<!-- 头部区域（可配合layui已有的水平导航） -->
+				<ul class="layui-nav layui-layout-left">
+					<li class="layui-nav-item"><a href="student_exlist.html">实验列表</a></li>
+					<li class="layui-nav-item layui-this"><a href="student_myex.html">我的实验</a></li>
+					<li class="layui-nav-item"><a href="my_appointment_list.html">预约管理</a></li>
+					<li class="layui-nav-item"><a href="student_personcenter.html">个人中心</a></li>
+				</ul>
+				<ul class="layui-nav layui-layout-right">
+					<li class="layui-nav-item" >
+						<a href="">
+							<span class="layui-icon admin_head">&#xe66f;</span>
+							<span class="studentName">学生</span>
+						</a>
+					</li>
+					<!--            todo:退出登录的a标签里面是退出登录的servlet url，-->
+					<!--                方法为get方法，后端注销会话后跳转到登录页面-->
+					<li class="layui-nav-item"><a href="LogoutServlet">退出</a></li>
+				</ul>
+			</div>
+			<div class="main_content" >
+				<!-- 内容主体区域 -->
+				<iframe src="my_experiment_details.html" id="myExperienceDetailsFrame"  scrolling="auto" frameborder="no"></iframe>
+				<iframe src="appointment_page.html" id="appointmentPageFrame"  scrolling="auto" frameborder="no"></iframe>
+			</div>
+		</div>
+		
+		<script src="js/jquery.min.js"></script>
+		<script src="layui/layui.js"></script>
+		<!--	获取学生名字的js，引用element实现特效-->
+		<script>
+			layui.use(['element', 'jquery','layer'], function() {
+				var $ = layui.jquery;
+				var layer = layui.layer;
+				$.ajax({
+					//todo：获取学生姓名接口.
+					url: "LabTeacherNameServlet",
+					type: "post",
+					data: "method="+"getName",
+					dataType: 'text',
+					success: function (returnData) {
+						$(".studentName").html(returnData);
+					},
+					error: function () {
+						layer.msg("获取姓名失败", {icon: 5, anim: 6,area:'180px'});
+					}
+				});
+			});
+		</script>
+	</body>
+</html>

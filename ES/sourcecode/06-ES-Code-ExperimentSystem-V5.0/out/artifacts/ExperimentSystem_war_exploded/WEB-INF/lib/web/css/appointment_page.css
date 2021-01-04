@@ -1,0 +1,122 @@
+body{
+    background: rgb(240,240,240);
+}
+.experiment-appointment-container{
+    background: #ffffff;
+    box-shadow:  11px 11px 21px #a3a3a4,
+    -11px -11px 21px #ffffff;
+    border-radius: 20px;
+    width: 780px;
+    height: 1300px;
+    margin: 50px auto;
+}
+
+
+.my-seats-container{
+    width: 600px;
+    height: 900px;
+    margin: auto;
+}
+
+.my-seats-container .seatCharts-cell {
+    color: #182C4E;
+    height: 35px;
+    width: 70px;
+    line-height: 30px;
+}
+.my-seats-container .seatCharts-seat {
+    color: #FFFFFF;
+    cursor: pointer;
+}
+.my-seats-container .seatCharts-row {
+    height: 40px;
+}
+.my-seats-container .seatCharts-seat.available {
+    background-color: #B9DEA0;
+}
+.my-seats-container .seatCharts-seat.focused {
+    background-color: #76B474;
+}
+.my-seats-container .seatCharts-seat.selected {
+    background-color: #82c9e6;
+}
+.my-seats-container .seatCharts-seat.unavailable {
+    background-color: #ccc;
+}
+
+.my-seats-container .front-indicator {
+    width: 300px;
+    height: 50px;
+    line-height: 40px;
+    font-size: 20px;
+    background-color: #9b9b9b;
+    color: #3f3f3f;
+    text-align: center;
+    border-radius: 5px;
+    margin: auto;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.my-seats-container #tips{
+    height: 50px;
+    width: 340px;
+    margin-left: 150px;
+}
+
+.my-seats-container #tips .seatCharts-legendItem{
+    float: left;
+}
+
+
+.experiment-appointment-container h2{
+    text-align: center;
+    padding-top: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    font-size: 32px;
+    color: #434343;
+    border-bottom: gray 2px solid;
+}
+
+.experiment-appointment-container .layui-btn{
+    margin: auto;
+    display: block;
+}
+
+.select-container {
+    width: 100%;
+    height: 160px;
+    margin: auto;
+    border-bottom: 2px gray solid;
+}
+
+.select-container form{
+    margin: auto;
+    width: 340px;
+    height: 100%;
+}
+
+.back-list{
+    position: fixed;
+    bottom: 200px;
+    right: 10px;
+    width: 45px;
+    height: 50px;
+    border-radius: 2px;
+    background: #ffffff;
+    box-shadow:  5px 5px 10px #9fa9af,
+    -5px -5px 10px #ffffff;
+}
+
+.back-list a{
+    display: block;
+    margin-left: 3px;
+    font-size: 18px;
+    color: rgba(240, 26, 38, 0.94);
+}
+
+.back-list a:hover{
+    color: rgba(240, 26, 38, 0.94);
+}
+

@@ -1,0 +1,135 @@
+body{
+	background: rgb(240,240,240);
+}
+.layui-card{
+	width: auto;
+	margin: auto;
+}
+.layui-card-header{
+	height: auto;
+	padding: 15px;
+	padding-bottom: 0;
+}
+.layui-card-header .ex_search{
+	margin-left: 65px;
+	/* float: right; */
+}
+.layui-card-body{
+	height: auto;
+	padding: 15px;
+}
+
+.addcourse-form .long-input .layui-input-inline{
+	width: 413px;
+}
+
+.addcourse-form .short-input .layui-input-inline{
+	width: 140px;
+}
+
+.addcourse-form label{
+	width: 85px;
+}
+
+.addcourse-form .term-label{
+	width: 80px;
+}
+
+.addcourse-form .introduction textarea{
+	width: 430px;
+	height: 150px;
+}
+
+.addcourse-form .resetbtn{
+	margin-left: 360px;
+}
+
+.addcourse-form .submitbtn{
+	margin-left: 209px;
+}
+
+.addcourse-form {
+	width: 1150px;
+	margin: auto;
+	border-radius: 20px;
+	background: #ffffff;
+	/*box-shadow:  8px 8px 8px #a8a8a8,*/
+	/*-8px -8px 8px #ffffff;*/
+
+	/*background: #f7f7f8;*/
+	box-shadow:  11px 11px 21px #a3a3a4,
+	-11px -11px 21px #ffffff;
+	margin-top: 15px;
+	padding-bottom: 20px;
+}
+
+.addcourse-form .left-content{
+	width: 49%;
+	float: left;
+}
+
+.addcourse-form .right-content{
+	width: 49%;
+	float: left;
+}
+
+.addcourse-form form{
+	padding-top: 30px;
+	border-top: 3px rgba(100,100,100,0.6) solid;
+	width: 1150px;
+}
+
+.addcourse-form .layui-input-inline input{
+	border: black solid 1px;
+	background-color: rgba(0,0,0,0.1);
+	/*color: rgba(220,220,220,1);*/
+	color: black;
+}
+
+.addcourse-form .layui-input-block textarea{
+	border: black solid 1px;
+	background-color: rgba(0,0,0,0.1);
+	color: black;
+}
+
+.addcourse-form label{
+	font-size: 20px;
+	color: rgba(0,0,0,0.8);
+	font-weight: bolder;
+	font-family: 楷体;
+}
+
+.addcourse-form .title{
+	width: 245px;
+	margin: auto;
+	padding: 20px;
+}
+.addcourse-form .file-upload-content .layui-input-block{
+}
+
+.addcourse-form .file-upload{
+	height: 30px;
+	padding-top: 15px;
+}
+
+.addcourse-form .file-upload a{
+	font-size: 18px;
+	margin-right: 20px;
+	float: left!important;
+}
+.addcourse-form .file-upload input{
+
+	float: left!important;
+}
+
+.info-form{
+	padding-top: 40px;
+	padding-left: 10px;
+
+}
+
+
+
+.layui-form-label{
+	width: 85px;
+}

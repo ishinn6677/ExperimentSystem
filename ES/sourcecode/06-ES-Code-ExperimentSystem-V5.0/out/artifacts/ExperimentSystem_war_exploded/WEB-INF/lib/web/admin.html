@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>开放式实验管理系统 | 教务处端</title>
+	</head>
+	<link rel="stylesheet" href="layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="css/admin.css" />
+	
+	<body>
+		<div class="layui-layout layui-layout-admin">
+			<!-- 头部 -->
+			<div class="layui-header header">
+				<div class="layui-logo">开放式实验 教务处</div>
+				<!-- 头部区域（可配合layui已有的水平导航） -->
+				<ul class="layui-nav layui-layout-left">
+					<li class="layui-nav-item"><a href="">所有实验列表</a></li>
+				</ul>
+				<ul class="layui-nav layui-layout-right">
+					<li class="layui-nav-item" >
+						<a href="">
+							<span class="layui-icon admin_head">&#xe66f;</span>
+							<span class="studentName">教务处</span>
+						</a>
+					</li>
+					<!--            todo:退出登录的a标签里面是退出登录的servlet url，-->
+					<!--                方法为get方法，后端注销会话后跳转到登录页面-->
+					<li class="layui-nav-item"><a href="LogoutServlet">退出</a></li>
+				</ul>
+			</div>
+			<div class="main_content" >
+				<!-- 内容主体区域 -->
+				<div class="layui-fluid">
+					<div class="layui-card">
+						<!-- 卡片内容——数据表格 -->
+						<div class="layui-card-body">
+							<div class="adminTable">
+							<div class="adminTableTitle"><h2>所有实验</h2></div>
+							<table id="experiment_list" lay-filter="experiment_list"></table>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+		
+		<!-- 行操作工具按钮 -->
+		<script type="text/html" id="rowOperation">
+			<div class="layui-btn-container " >
+			        <a class="layui-btn layui-icon  layui-btn-normal  layui-btn " lay-event="exportScores" >导出所有学生成绩</a>
+			        <!-- <a class="layui-btn layui-icon   layui-btn-sm " lay-event="exportReports">导出所有报告</a> -->
+			</div>
+		</script>
+		
+		<script src="js/jquery.min.js"></script>
+		<script src="layui/layui.js"></script>
+		<script>
+			layui.use(['element','table','layer'],function(){
+				var element = layui.element;
+				var table = layui.table
+				
+				// 表格渲染 , 教务处应该能看到所有的实验
+				var tableIns = table.render({
+					elem: '#experiment_list',
+					height: 'full',
+					url: 'AllExperimentInfoServlet', //todo:所有实验的表格数据接口
+					toolbar: '#',
+					defaultToolbar: ['filter', 'exports', 'print'],
+					title: '实验列表',
+					initSort: {field:'id', type:'desc'},
+					loading:true,
+					page: true,
+					limits:[5,10,15,20,35,50,100,9999],
+					cols: [
+					    [{field:'id', title:'实验ID',minWidth:80,fixed:'left',unresize:true,sort:true,style:"color:red"}
+					    ,{field:'exName', title:'实验名称', minWidth:160,sort:true}
+					    ,{field:'teacher', title:'实验老师', minWidth:160,sort:true}
+					    ,{field:'room', title:'上机教室', minWidth:160,sort:true,templet: function(d){return '计算机院办'+"<b>"+d.room+"</b>";}}
+					    ,{field:'year', title:'年份', minWidth:80,sort:true,templet: function(d){return "<b>"+d.year+"</b>" +'年';}}
+					    ,{field:'term', title:'学期',minWidth:80,sort:true,templet: function(d){return  '第'+"<b>"+d.term+"</b>"+'学期';}}
+						,{field:'ddl',title:'报告截止日期',minWidth:80,sort:true}
+						,{field:'operation',fixed: 'right', title:'操作',toolbar: '#rowOperation', minWidth:180}
+					    ]
+					]
+				});
+				
+				// 监听行工具事件
+					table.on('tool(experiment_list)',function(obj){
+						// console.log(data);
+						if(obj.event=='exportScores'){//导出成绩，表格重载
+							$(".layui-table-view").remove();
+							var data = obj.data;
+							var exId = data.id;
+							var exName = data.exName;
+							var newCols = [[
+								{field:'studentId',title:'学生学号',minWidth:160,fixed:'left',sort:true},
+								{field:'studentName',title:'学生姓名',minWidth:100,sort:true},
+								{field:'exId',title:'实验ID',minWidth:160,sort:true},
+								{field:'exName',title:'实验',minWidth:160,sort:true},
+								{field:'teacher',title:'老师',minWidth:100,sort:true},
+								{field:'score',title:'学生成绩',minWidth:100,sort:true}
+							]];
+							var newTitle = exId+'_'+exName+'_学生成绩';
+
+							table.render({
+								elem: '#experiment_list',
+								url:'AExperimentScoreServlet',	//TODO 查询该实验所有学生和成绩
+								initSort: {field:"studentId",type:"desc"},
+								cols:newCols,
+								title:newTitle,
+								toolbar: '#',
+								defaultToolbar: ['filter', 'exports', 'print'],
+								limits:[5,10,15,20,35,50,100,9999],
+								loading:true,
+								page: true,
+								where:{
+									exid : exId
+								}
+							});
+
+							$('.adminTableTitle').html('<h2>'+exName+'</h2>');
+							//tips层
+							layer.tips('这里导出哦', '.layui-icon-export',{
+								tips:[3, 'rgb(45, 168, 246)']
+							});
+
+						}
+						
+					})
+				
+			});
+		</script>
+		
+	</body>
+</html>

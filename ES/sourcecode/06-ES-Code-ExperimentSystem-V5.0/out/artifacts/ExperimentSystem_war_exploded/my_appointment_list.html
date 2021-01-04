@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>预约管理</title>
+</head>
+<link rel="stylesheet" href="layui/css/layui.css" media="all">
+<link rel="stylesheet" href="css/my_appointment_list.css" />
+<body>
+<div class="layui-layout layui-layout-admin">
+    <!-- 头部 -->
+    <div class="layui-header header">
+        <div class="layui-logo">开放式实验 学生端</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a href="student_exlist.html">实验列表</a></li>
+            <li class="layui-nav-item"><a href="student_myex.html">我的实验</a></li>
+            <li class="layui-nav-item layui-this"><a href="my_appointment_list.html">预约管理</a></li>
+            <li class="layui-nav-item"><a href="student_personcenter.html">个人中心</a></li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item" >
+                <a href="">
+                    <span class="layui-icon admin_head">&#xe66f;</span>
+                    <span class="studentName">学生</span>
+                </a>
+            </li>
+            <!--            todo:退出登录的a标签里面是退出登录的servlet url，-->
+            <!--                方法为get方法，后端注销会话后跳转到登录页面-->
+            <li class="layui-nav-item"><a href="LogoutServlet">退出</a></li>
+        </ul>
+    </div>
+    <div class="main_content" >
+        <!-- 内容主体区域 -->
+        <div class="layui-fluid">
+            <div class="layui-card">
+                <!-- 卡片内容——数据表格 -->
+                <div class="layui-card-body">
+                    <div class="appointment-list-title"><h2>预约管理</h2></div>
+                    <table id="appointmentList" lay-filter="appointment-list" >
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!--查看详情用的表单-->
+<!--		查看详情用的表单-->
+<form class="layui-form info-form" lay-filter="info-form" style="display: none" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">预约ID</label>
+        <div class="layui-input-inline">
+            <input class="layui-input" name="appointmentId" style="color: red;" type="text" readonly="readonly">
+        </div>
+    </div>
+
+    <div class="idItem layui-form-item">
+        <label class="layui-form-label">实验ID</label>
+        <div class="layui-input-inline">
+            <input class="layui-input" name="experimentId" style="color: red;" type="text" readonly="readonly">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">实验名称</label>
+        <div class="layui-input-inline">
+            <input class="layui-input" type="text" name="experimentName"  readonly="readonly">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">预约机房</label>
+        <div class="layui-input-inline">
+            <input class="layui-input" type="text" name="room"  readonly="readonly">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">第几周</label>
+            <div class="layui-input-inline">
+                <input name="week" type="text" class="layui-input"  readonly="readonly">
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">周几</label>
+            <div class="layui-input-inline">
+                <input class="layui-input" type="text" name="weekDay"  readonly="readonly">
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">第几大节</label>
+        <div class="layui-input-inline">
+            <input class="layui-input" type="text" name="dayOrder"  readonly="readonly">
+        </div>
+    </div>
+
+</form>
+
+<!-- 行操作工具按钮 -->
+<script type="text/html" id="rowOperation">
+    <div class="layui-btn-container layui-fluid" >
+        <a class="layui-btn layui-icon  layui-btn-normal  layui-btn-sm" lay-event="info">&#xe615; 详情</a>
+        <a class="layui-btn layui-icon    layui-btn-sm" lay-event="sign">&#xe6b2; 签到</a>
+        <a class="layui-btn layui-icon  layui-btn-danger layui-btn-sm" lay-event="cancel">&#x1006; 取消预约</a>
+    </div>
+</script>
+<script src="js/jquery.min.js"></script>
+<script src="layui/layui.js"></script>
+<!--	获取学生名字的js，引用element实现特效-->
+<script>
+    layui.use(['element', 'jquery','layer'], function() {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        $.ajax({
+            //todo：获取学生姓名接口.
+            url: "LabTeacherNameServlet",
+            type: "post",
+            data: "method="+"getName",
+            dataType: 'text',
+            success: function (returnData) {
+                $(".studentName").html(returnData);
+            },
+            error: function () {
+                layer.msg("获取姓名失败", {icon: 5, anim: 6,area:'180px'});
+            }
+        });
+    });
+</script>
+<!-- 表格内容 -->
+<script>
+    layui.use(['element', 'form', 'table','layer'],function(){
+        var $ = layui.jquery;
+        var element = layui.element;
+        var form = layui.form;
+        var table = layui.table;
+
+        // 表格渲染
+        table.render({
+            elem: '#appointmentList',
+            url: 'AppointExperimentInfoServlet', //todo:我的预约表格接口
+            toolbar: '#',
+            defaultToolbar: ['filter', 'exports', 'print'],
+            title: '我的预约',
+            initSort: {field:'appointmentId', type:'desc'},
+            limits:[5,10,15,20,35,50,100,9999],
+            loading:true,
+            page: true,
+            cols: [
+                [
+                     {field:'appointmentId',rowspan:2, title:'预约id',minWidth:80,fixed:'left',unresize:true,sort:true,style:"color:red"}
+                    ,{field:'experimentId',rowspan:2, title:'实验id',minWidth:80,fixed:'left',unresize:true,sort:true,style:"color:red"}
+                    ,{field:'experimentName',rowspan:2, title:'实验名称', minWidth:160,sort:true}
+                    ,{field:'room',rowspan:2, title:'预约教室', minWidth:160,sort:true,templet: function(d){return '计算机院办'+"<b>"+d.room+"</b>";}}
+                    ,{align: 'center',title:'预约时间',colspan:3}
+                    ,{field:'operation',rowspan:2,fixed: 'right', title:'操作',toolbar: '#rowOperation', minWidth:260}
+                ],
+                [
+                    {field:'week', title:'第几周', minWidth:160,sort:true,templet: function(d){return  '第'+"<b>"+d.week+"</b>" +'周';}},
+                    {field:'weekDay', title:'周几', minWidth:160,sort:true,templet: function(d){return  '周'+"<b>"+d.weekDay+"</b>";}},
+                    {field:'dayOrder', title:'第几节', minWidth:160,sort:true,templet: function(d){return  '第'+"<b>"+d.dayOrder+"</b>"+'大节';}}
+                ]
+            ]
+        });
+
+        // 监听行工具事件
+        table.on('tool(appointment-list)',function(obj){
+            var data = obj.data;
+            if(obj.event=='info'){//查看详情
+                var layerIndex = layer.open({
+                    type: 1,
+                    title: "查看详情",
+                    content: $(".info-form"),
+                    skin: "layui-layer-molv",
+                    area: ['700px', '450px'],
+                    shadeClose: true,
+                })
+                form.val('info-form',data);
+            }else if(obj.event=='cancel'){
+                layer.confirm('确定取消预约？', {
+                    btn: ['确定','取消'] ,//按钮,
+                    title:"提示"
+                }, function(index){//确定
+                    $.ajax({
+                        url: "WithdrawalExperimentServlet",//todo 取消预约
+                        type: "post",
+                        data: "appointmentId="+data.appointmentId,
+                        dataType: 'text',
+                        success: function (returnData) {
+                            if(returnData=="success"){
+                                layer.msg("预约已取消", {icon: 6, anim: 6});
+                                obj.del();
+                            } else if(returnData=="false"){
+                                layer.msg("超过截止日期，取消失败", {icon: 5, anim: 6})
+                            }
+                        },
+                        error: function () {
+                            layer.msg("请求失败", {icon: 5, anim: 6})
+                        }
+                    });
+                    layer.close(index);
+                }, function(index){
+                    layer.close(index);
+                });
+            }else if(obj.event=='sign'){
+                layer.confirm('是否签到？', {
+                    btn: ['确定','取消'] ,//按钮,
+                    title:"提示"
+                }, function(index){//确定
+                    $.ajax({
+                        url: "SignServlet",//todo 签到
+                        type: "post",
+                        data: "appointmentId="+data.appointmentId,
+                        dataType: 'text',
+                        success: function (returnData) {
+                            if(returnData=="success"){
+                                layer.msg("签到成功", {icon: 6, anim: 6});
+                            } else if(returnData=="false"){
+                                layer.msg("签到失败", {icon: 5, anim: 6})
+                            }else if(returnData=="haveSign"){
+                                layer.msg("您已经签过到了", {icon: 5, anim: 6});
+                            }
+                        },
+                        error: function () {
+                            layer.msg("请求失败", {icon: 5, anim: 6})
+                        }
+                    });
+                    layer.close(index);
+                }, function(index){
+                    layer.close(index);
+                });
+            }
+        })
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+body{
+	background: rgb(240,240,240);
+}
+.layui-table-body .layui-table-cell {
+	height: 45px !important;
+	line-height: 50px !important;
+}
+
+.layui-table .layui-btn-container .layui-btn {
+	margin-bottom: 0;
+}
+.adminTable{
+	position: relative;
+}
+.adminTable .adminTableTitle{
+	position: absolute;
+	z-index: 999;
+	left: 45%;
+	top: 25px;
+	letter-spacing: 0.5em;
+}

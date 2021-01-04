@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>我的实验</title>
+	</head>
+	<link rel="stylesheet" href="layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="css/my_experiment_details.css" />
+	<body>
+		<div class="layui-fluid">
+			<div class="layui-card">
+				<!-- 卡片内容——数据表格 -->
+				<div class="layui-card-body">
+					<div class="my_experiment_table">
+						<div class="my_experiment_title"><h2>我的实验</h2></div>
+						<table id="my_experiment_list" lay-filter="my_experiment_list"></table>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!--查看详情用的表单-->
+		<form class="layui-form info-form" lay-filter="info-form" style="display: none" action="">
+			<div class="idItem layui-form-item">
+				<label class="layui-form-label">实验ID</label>
+				<div class="layui-input-inline">
+					<input class="layui-input" name="id" style="color: red;" type="text" readonly="readonly">
+				</div>
+				<label class="layui-form-label">实验名称</label>
+				<div class="layui-input-inline">
+					<input class="layui-input" type="text" name="exName"  readonly="readonly">
+				</div>
+			</div>		
+			
+			<div class="layui-form-item ">
+				<label class="layui-form-label">实验老师</label>
+				<div class="layui-input-inline">
+					<input class="layui-input" type="text" name="teacher"  readonly="readonly">
+				</div>
+				<label class="layui-form-label">上机教室</label>
+				<div class="layui-input-inline">
+					<input class="layui-input" type="text" name="room"  readonly="readonly">
+				</div>
+			</div>
+		
+			<div class="layui-form-item ">
+					<label class="layui-form-label">年份</label>
+					<div class="layui-input-inline">
+						<input name="year" type="text" class="layui-input" id="year"  readonly="readonly">
+					</div>
+					<label class="layui-form-label">学期</label>
+					<div class="layui-input-inline">
+						<input class="layui-input" type="text" name="term"  readonly="readonly">
+					</div>
+			</div>
+			
+			<div class="layui-form-item ">
+					<label class="layui-form-label">报告截止日期</label>
+					<div class="layui-input-inline">
+						<input class="layui-input" type="text" name="ddl"  readonly="readonly">
+					</div>
+					<label class="layui-form-label">实验报告模板</label>
+					<div class="layui-input-block">
+					    <div class="file_download">
+					        <a class="layui-btn" href="" id="experiment_doc_download" download="">模板下载</a>
+					    </div>
+					</div>
+			</div>
+			
+			<div class="layui-form-item layui-form-text">
+				<label class="layui-form-label">内容简介</label>
+				<div class="layui-input-block">
+					<textarea class="layui-textarea" type="text" name="experiment_introduction" id="exlist_introduction" readonly="readonly"></textarea>
+				</div>
+			</div>
+		
+		</form>
+
+<!--		上传专用按钮-->
+		<a class="uploadFile"  style="display: none;">真正的上传按钮</a>
+		<!-- 行操作工具按钮 -->
+		<script type="text/html" id="detail_rowOperation">
+			<div class="layui-btn-container detail_operation">
+					<a class="layui-btn layui-icon layui-btn-xs layui-btn-warm" lay-event="uploadFile">提交报告</a>
+			        <a class="layui-btn layui-icon layui-btn-xs layui-btn-normal" lay-event="info">&#xe615; 详情</a>
+					<a class="layui-btn layui-icon layui-btn-xs" lay-event="appointment">&#xe60e; 预约</a>
+					<a class="layui-btn layui-icon layui-btn-xs layui-btn-danger" lay-event="drop">&#x1006; 退选</a>
+			</div>
+		</script>
+		
+		<script src="js/jquery.min.js"></script>
+		<script src="layui/layui.js"></script>
+		
+		<!-- 表格内容 -->
+		<script>
+			layui.use(['element', 'form', 'table','layer','upload'],function(){
+				var $ = layui.jquery;
+				var element = layui.element;
+				var form = layui.form;
+				var table = layui.table;
+				var upload = layui.upload;
+					
+				// 表格渲染
+				table.render({
+					elem: '#my_experiment_list',
+					height: 'full',
+					url: 'AllSelectedExperimentInfoServlet', //todo:这个学生报名的实验列表
+					toolbar: '#',
+					defaultToolbar: ['filter', 'exports', 'print'],
+					title: '我的实验',
+					initSort: {field:'id', type:'desc'},
+					limits:[5,10,15,20,35,50,100,9999],
+					loading:true,
+					page: true,
+					cols: [
+					    [{field:'id', title:'实验ID',minWidth:60,fixed:'left',unresize:true,sort:true,style:"color:red"}
+					    ,{field:'exName', title:'实验名称', minWidth:160,sort:true}
+					    ,{field:'teacher', title:'实验老师', minWidth:70,sort:true}
+					    ,{field:'room', title:'上机教室', minWidth:160,sort:true,templet: function(d){return '计算机院办'+"<b>"+d.room+"</b>";}}
+					    ,{field:'year', title:'年份', minWidth:60,sort:true,templet: function(d){return "<b>"+d.year+"</b>" +'年';}}
+					    ,{field:'term', title:'学期',minWidth:60,sort:true,templet: function(d){return  '第'+"<b>"+d.term+"</b>"+'学期';}}
+						,{field:'ddl',title:'报告截止日期',minWidth:80,sort:true}
+						,{field:'score',title:'分数',minWidth:80,sort:true,templet:
+							function(d){
+							    if(d.score===-1){
+							        return "<span style='color: red;'>"+"未打分"+"</span>";
+							    }else{
+							        return "<b>"+d.score+"</b>"+"分";
+							    }
+							}
+						}
+						,{field:'operation',fixed:'right',title:'操作',toolbar: '#detail_rowOperation', minWidth:260}
+					    ]
+					]
+				});
+
+				// 监听行工具事件
+				table.on('tool(my_experiment_list)',function(obj){
+					var data = obj.data;
+					// console.log(data);
+					if(obj.event=='info'){//查看详情
+						var layerIndex = layer.open({
+						    type: 1,
+						    title: "查看详情",
+						    content: $(".info-form"),
+						    skin: "layui-layer-molv",
+						    area: ['700px', '490px'],
+						    shadeClose: true,
+						 })
+						form.val('info-form',data);
+						$.ajax({
+							//TODO:获取该实验的实验简介
+							url:"ExperimentIntroductionServlet",
+							type:'post',
+							data:"method="+"getIntroduction"+"&id="+data.id,
+							dataType:'text',
+							success:function(data){//返回的data即为实验简介字符串
+								$('#exlist_introduction').val(data);
+							},
+							error:function(){
+								layer.msg("简介请求失败");
+							}
+						});
+
+						$.ajax({
+							//TODO:获取该实验模板地址
+							url:"ExperimentTemplateUrlServlet",
+							type:'post',
+							data:"method="+"getDownLoadUrl"+"&id="+data.id,
+							dataType:'text',
+							success:function(returnData){//返回的data即为实验简介字符串
+								$('#experiment_doc_download')[0].href=returnData;
+								$('#experiment_doc_download')[0].download=data.id+'_'+data.exName+"_模板";
+							},
+							error:function(){
+								layer.msg("下载实验报告模板地址获取失败");
+							}
+						});
+
+					}
+					else if(obj.event == 'appointment'){
+						$.ajax({
+							//todo：后端session切换当前实验.给定实验id，返回是否切换成功
+							url: "SwitchExperimentSessionServlet",
+							type: "post",
+							data: "id="+data.id,
+							dataType: 'text',
+							success: function (returnData) {	//返回实验的简介
+								if(returnData==="success"){
+									var experimentId = data.id;
+									//开始切换实验,核心中的核心！！！老天爷保佑(上一次是老天保佑，这次老天爷保佑！！！)！！！
+									//1.切换iframe框架
+									window.parent.document.getElementById("appointmentPageFrame").contentWindow.scrollTo(0,0);
+									window.parent.document.getElementById("myExperienceDetailsFrame").style.zIndex = '0';
+									window.parent.document.getElementById("appointmentPageFrame").style.zIndex = '100';
+								}else{
+									layer.msg("预约实验打开失败", {icon: 5, anim: 6})
+								}
+							},
+							error: function () {
+								layer.msg("预约实验请求失败", {icon: 5, anim: 6});
+							}
+						});
+
+					}
+					else if(obj.event == 'drop'){//退选
+						layer.confirm('真的要退选该实验吗？', {
+							btn: ['是的','取消'] ,//按钮,
+							title:"提示"
+						}, function(){//确定
+							$.ajax({
+								url:"WithdrawalExperimentServlet",
+								type:'post',
+								data:"id="+data.id+"&method="+"dropCourse",
+								dataType:'text',
+								success:function(data){
+									if(data=="success"){
+										layer.msg("退课成功",{icon:6});
+										obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+									}
+									else if(data=="failed"){
+										layer.msg("操作失败",{icon:5,anim:6});
+									}
+								},
+								error:function(){
+									layer.msg("请求失败",{icon:5,anim:6});
+								}
+							})
+							return;//忘了要不要加 现在啥也看不到
+						}, function(index){//取消
+							layer.close(index);
+						});
+						
+					}
+					else if(obj.event == 'uploadFile'){//TODO: 上传实验报告
+						alert('id='+data.id+'&method='+'upload');
+						uploadBtn.reload({
+						    elem: '.uploadFile'
+						    ,url: 'StudentUploadExReportServlet'
+						    ,data: 'id='+data.id
+						    ,accept: 'file' //普通文件
+						    ,before: function(){ 
+						       // layer.load(); //上传loading
+						    }
+							,done: function(res){
+								if(res.code==0){
+									layer.msg('上传成功',{icon:6});
+									console.log(res);
+								}else{
+									layer.msg('上传失败',{icon:5,anim:6});
+									console.log(res);
+								}
+						    }
+							,error:function(){
+								layer.msg('请求失败',{icon:5,anim:6});
+							}
+						});
+						$(".uploadFile").click();
+					}
+				})
+
+
+			});
+		</script>
+
+<!--		修改bug，上传报告初始render一下-->
+		<script>
+			var uploadBtn;
+			layui.use('upload',function (){
+				var upload = layui.upload;
+				uploadBtn = upload.render({
+					elem: '.uploadFile'
+					,url: 'StudentUploadExReportServlet'
+					,accept: 'file' //普通文件
+					,before: function(){
+						// layer.load(); //上传loading
+					}
+					,done: function(res){
+						if(res.code==0){
+							layer.msg('上传成功',{icon:6});
+							console.log(res);
+						}else{
+							layer.msg('上传失败',{icon:5,anim:6});
+							console.log(res);
+						}
+					}
+					,error:function(){
+						layer.msg('请求失败',{icon:5,anim:6});
+					}
+				});
+			});
+		</script>
+		
+	</body>
+</html>

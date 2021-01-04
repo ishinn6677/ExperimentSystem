@@ -1,0 +1,13 @@
+{
+  "code": 0,
+  "msg": "",
+  "count": 1,
+  "data": [{
+    "studentId": "209",
+    "studentName": "牛旭光",
+    "exId": 10,
+    "exName": "NXG",
+    "teacher": "123",
+    "score": 88
+  }]
+}

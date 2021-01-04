@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>预约界面</title>
+    <link rel="stylesheet" type="text/css" href="css/jquery.seat-charts.css">
+    <link rel="stylesheet" type="text/css" href="css/appointment_page.css">
+    <link rel="stylesheet" type="text/css" href="layui/css/layui.css">
+</head>
+<body>
+<div class="experiment-appointment-container">
+    <h2>实验预约</h2>
+    <div class="select-container">
+        <form class="layui-form" lay-filter="select-form" id="selectTimeAddForm">
+            <div class="layui-form-item">
+                <label class="layui-form-label">上机教室</label>
+                <div class="layui-input-inline">
+                    <select  id="room" lay-verify="required" name="room" lay-filter="select-room" required lay-search>
+                        <option value="">请选择上机教室</option>
+                        <option value="1001">计算机院办1001</option>
+                        <option value="1002">计算机院办1002</option>
+                        <option value="1003">计算机院办1003</option>
+                        <option value="1004">计算机院办1004</option>
+                        <option value="1005">计算机院办1005</option>
+                        <option value="1006">计算机院办1006</option>
+                        <option value="1007">计算机院办1007</option>
+                        <option value="1008">计算机院办1008</option>
+                        <option value="1009">计算机院办1009</option>
+                        <option value="1010">计算机院办1010</option>
+                        <option value="1011">计算机院办1011</option>
+                        <option value="1012">计算机院办1012</option>
+                        <option value="1013">计算机院办1013</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">上机日期</label>
+                <div class="layui-input-inline">
+                    <input id="goComputerDate" name="goComputerDate" type="text" class="layui-input" lay-verify="required"
+                            placeholder="请选择上机日期" required
+                    />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">第几大节</label>
+                <div class="layui-input-inline">
+                    <select id="dayOrder" lay-filter="select-day-order" name="dayOrder" lay-verify="required" lay-search>
+                        <option value="">请选择第几大节</option>
+                        <option value="1">第一大节</option>
+                        <option value="2">第二大节</option>
+                        <option value="3">第三大节</option>
+                        <option value="4">第四大节</option>
+                        <option value="5">第五大节</option>
+                    </select>
+                </div>
+            </div>
+            <button class="layui-btn" id="submitAppointment" lay-submit lay-filter="submit-appointment" style="display: none;"></button>
+        </form>
+    </div>
+    <div class="my-seats-container">
+        <div id="tips"></div>
+        <div class="front-indicator">黑板</div>
+        <div id="seat-map"></div>
+    </div>
+    <button class="layui-btn" onclick="transmitClik()">提交预约</button>
+</div>
+<!--返回我的实验列表-->
+<div class="back-list" >
+    <a href="javascript:;" onclick="returnList()">
+        返回列表
+    </a>
+</div>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery.seat-charts.min.js"></script>
+<script src="layui/layui.js" charset="utf-8"></script>
+
+<script>
+    // 傀儡按钮点击后，触发真正的按钮,从而获得表单验证等便利
+    function transmitClik(){
+        $("#submitAppointment").click();
+    }
+    layui.use(['form','laydate','element','layer'],function () {
+        var form  = layui.form;
+        var laydate = layui.laydate;
+        var layer = layui.layer;
+        laydate.render({
+            elem: '.experiment-appointment-container #goComputerDate',
+            min:0,
+            max:6,
+            done:function () {
+                inputChange();
+            }
+        });
+        //提交预约
+        form.on('submit(submit-appointment)',function (data) {
+            if(nowSeatId==="0_0"){
+                layer.msg("请选择座位",{icon:5,anim:6});
+                return false;
+            }
+            data.field.seatLabel = getLabelById(nowSeatId)+"";
+            //todo:提交预约接口，
+            $.ajax({
+                url: "AppointServlet",
+                type: "post",
+                data: data.field,
+                dataType: 'text',
+                success: function (returnData) {
+                    if(returnData=="success"){
+                        layer.msg("预约成功", {icon: 6, anim: 6});
+                    }else if(returnData=="havePeople"){
+                        layer.msg("您已经在对应时间段预约过实验！", {icon: 5, anim: 6});
+                    }else if(returnData=="false"){
+                        layer.msg("预约失败", {icon: 5, anim: 6})
+                    }
+                },
+                error: function () {
+                    alert(JSON.stringify(data.field));
+                    layer.msg("请求失败", {icon: 5, anim: 6})
+                }
+            });
+            return false;
+        });
+
+        /*一下为预约表格更新控制代码*/
+        //初始化表格
+        nowSeatId = "0_0";
+        allUnavailable();
+        //从后端获取当前座位情况
+        function inputChange(){
+            var roomData = $("#room").val();
+            var goComputerDateData = $("#goComputerDate").val();
+            var dayOrderData = $("#dayOrder").val();
+            var totalData = "room="+roomData+"&"+"goComputerDate="+goComputerDateData
+                +"&"+"dayOrder="+dayOrderData;
+            if(roomData===""||goComputerDateData==="" ||dayOrderData===""){
+                // layer.msg("input change allUnavailable");
+                allUnavailable();
+            }else{
+                // layer.msg("input change update");
+                //todo:获取当前可选机位的接口,返回json
+                $.ajax({
+                    url: "CurrentFreeSeatServlet",
+                    type: "post",
+                    data: totalData,
+                    dataType: 'json',
+                    success: function (returnData) {
+                        inputChangeinit(returnData.okRooms);
+                    },
+                    error: function () {
+                        layer.msg("请求失败", {icon: 5, anim: 6})
+                    }
+                });
+            }
+        }
+        //设置通过时间获取座位情况
+        setInterval(function () {
+            var roomData = $("#room").val();
+            var goComputerDateData = $("#goComputerDate").val();
+            var dayOrderData = $("#dayOrder").val();
+            var totalData = "room="+roomData+"&"+"goComputerDate="+goComputerDateData
+                +"&"+"dayOrder="+dayOrderData;
+            if(roomData===""||goComputerDateData==="" ||dayOrderData===""){
+                return;
+            }else{
+                // layer.msg("time change update");
+                //todo:获取当前可选机位的接口,返回json
+                $.ajax({
+                    url: "CurrentFreeSeatServlet",
+                    type: "post",
+                    data: totalData,
+                    dataType: 'json',
+                    success: function (returnData) {
+                        timeInit(returnData.okRooms);
+                    },
+                    error: function () {
+                        layer.msg("请求失败", {icon: 5, anim: 6})
+                    }
+                });
+            }
+        },1000);
+
+        //时间地点输入框改变时的事件绑定，还有一个是laydate回调，在上面
+        form.on('select(select-room)',function () {
+            inputChange();
+        })
+
+        form.on('select(select-day-order)',function () {
+            inputChange();
+        })
+
+        $("#goComputerDate").bind('input propertychange',function () {
+            inputChange();
+        });
+
+    });
+</script>
+
+<!--实验预约场地制造-->
+<script>
+    var nowSeatId = "0_0";
+    var sc = $("#seat-map").seatCharts({
+        map: [
+            'aaaaaa',
+            'aaaaaa',
+            '______',
+            'aaaaaa',
+            'aaaaaa',
+            '______',
+            'aaaaaa',
+            'aaaaaa',
+            '______',
+            'aaaaaa',
+            'aaaaaa',
+            '______',
+            'aaaaaa',
+            'aaaaaa',
+            '______',
+            'aaaaaa',
+            'aaaaaa'
+        ],
+        seats: {
+            a: {
+                classes: 'seat-class',
+                category: '座位'
+            }
+        },
+        naming: {
+            top: false,
+            rows: ['1','2','','3','4','','5','6','','7','8','','9','10','','11','12'],
+            getLabel: function (character, row, column) {
+                return (row-1)*6+column;
+            }
+        },
+        legend: {
+            node: $('#tips'),
+            items: [
+                ['a', 'available', '可选'],
+                ['a', 'unavailable', '不可选'],
+                ['a', 'selected', '已选'],
+            ]
+        },
+        click: function () {
+            if (this.status() == 'available') {
+                if(nowSeatId!='0_0'){
+                    sc.status(nowSeatId,'available');
+                }
+                nowSeatId = this.settings.id;
+                return 'selected';
+            } else if (this.status() == 'selected') {
+                nowSeatId = '0_0';
+                return 'available';
+            } else if (this.status() == 'unavailable') {
+                return 'unavailable';
+            } else {
+                return this.style();
+            }
+        }
+    });
+
+    //座位号和id之间的转换
+    function getLabelById(id) {
+        if(id==="0_0") return 0;
+        var strArr = id.split('_');
+        return (parseInt(strArr[0])-1)*6+parseInt(strArr[1]);
+    }
+
+    function getIdByLabel(label) {
+        label--;
+        return Math.floor(label/6)+1+"_"+(label%6+1+"");
+    }
+
+    //控制场地刷新用的函数
+    function allUnavailable() {
+        sc.find('selected').status('unavailable');
+        sc.find('available').status('unavailable');
+    }
+
+    function inputChangeinit(isOkLabels) {
+        allUnavailable();
+        for(var i = 0;i<isOkLabels.length;i++){
+            sc.status(getIdByLabel(isOkLabels[i]),'available');
+        }
+        nowSeatId = "0_0";
+    }
+
+    function timeInit(isOkLabels) {
+        allUnavailable();
+        for(var i = 0;i<isOkLabels.length;i++){
+            sc.status(getIdByLabel(isOkLabels[i]),'available');
+        }
+        if(nowSeatId!="0_0"){
+            if(sc.status(nowSeatId)=="available") {
+                sc.status(nowSeatId,"selected");
+            } else{
+                nowSeatId = "0_0";
+            }
+        }
+    }
+
+</script>
+
+<!--切换frame相关js-->
+<script>
+    function returnList() {
+        //清空已选择的一切
+        layui.use('form',function () {
+            var form  = layui.form;
+            var clearJson = {room:"",goComputerDate:"",dayOrder:""};
+            form.val('select-form',clearJson);
+        })
+        allUnavailable();
+        //切换页面层次
+        window.parent.document.getElementById("appointmentPageFrame").style.zIndex = '0';
+        window.parent.document.getElementById("myExperienceDetailsFrame").style.zIndex = '100';
+
+    }
+</script>
+</body>
+</html>
